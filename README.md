@@ -35,12 +35,12 @@ _*! To make sure that everything works you have to start your tools with Admin p
 
 To create a Virtual Machine you need to do following steps:
 
-1. Start Visual Studio and open the folder for your project. Using `bash` terminal you have to intialise your folder with a following command: `vagrant init`. After initialising new file will be created called `Vagrantfile` which will act as a configuration file when creating a Virtual Machine
-2. Before creating a VM you need to start VirtualBox (remember to start it as an Administrator). To create our VM first open `Vagrantfile` and change `config.vm.box` line to be as following: `config.vm.box = "ubuntu/xenial64"`. This way we ensure we will have Ubuntu on our VM. After that type `vagrant up` in your terminal and it should send a command to `VirtualBox` to start a new VM.
+1. Start a Visual Studio and open the folder for your project. Using `bash` terminal you have to intialise your folder with a following command: `vagrant init`. After initialising new file will be created called `Vagrantfile` which will act as a configuration file when creating a Virtual Machine
+2. Before creating a VM you need to start a VirtualBox (remember to start it as an Administrator). To create our VM first open `Vagrantfile` and change `config.vm.box` line to be as following: `config.vm.box = "ubuntu/xenial64"`. This way we ensure we will have Ubuntu on our VM. After that type `vagrant up` in your terminal and it should send a command to `VirtualBox` to start a new VM.
 3. Once all the set up process is finished the new Virtual Machine should be available for us to use localy.
-4. It can be optional, but we can add provisioners in order to automate the set-up of our VM machine by updating and install any required packages automatically when starting it up. Simillar to "User data" in AWS, we can write a script with commands to be executed when we running up our VM. More on this in the next chapter.
+4. It can be optional, but we can add provisioners in order to automate the set-up of our VM machine by updating and installing any required packages automatically when starting it up. Simillar to "User data" in AWS, we can write a script with commands to be executed when we running up our VM. More on this in the next chapter.
 5. If you added any provisions instructions you can either restart your VM or start a new one in order of this script to be executed.
-6. Finally, when all of the preparations are done and VM is running we can use ssh connection to connect to our VM. To do that we need to use our Bash terminal. Then, use `cd` commands to navigate into your project folder where `Vargantfile` is located and use command `vargant ssh` to connect to VM by ssh.
+6. Finally, when all of the preparations are done and VM is running we can use `ssh` connection to connect to our VM. To do that we need to use our Bash terminal. Then, use `cd` commands to navigate into your project folder where `Vargantfile` is located and use command `vargant ssh` to connect to VM by `ssh`.
 
 
 ### Create Provisioners
@@ -51,11 +51,11 @@ In order to create provisioners I will write two possible ways, however there ar
 
     * Open `Vagrantfile`
     * Create a script inside the file by typing following command:
-        * `config.vm.provision "shell", inline: <<-SHELL` - where `config.vm.provision "shell"` says we will execute provisioning shell script; `inline:` tell it will be an executable command; `<<-SHELL` determins the start of the script
+        * `config.vm.provision "shell", inline: <<-SHELL` - where `config.vm.provision "shell"` says we will execute provisioning shell script; `inline:` tells it will be an executable command; `<<-SHELL` determins the start of the script
         * `sudo apt update -y` - command to update our software
         * `sudo apt upgrade -y` - command to upgrade our software
         * `sudo apt install nginx -y` - install nginx
-        * `SHELL`- specify the end of the script
+        * `SHELL`- determins the end of the script
     * After that you can either use `vagrant destroy` to stop your VM and then `vagrant up` to start a new one with your provisioning, or you can use command `vagrant reload --provision` in order to reload your VM with provision in mind
 
 2. Execute a shell script file:
