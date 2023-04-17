@@ -67,3 +67,14 @@ In order to create provisioners I will write two possible ways, however there ar
     * Open `Vagrantfile`  and add the following line underneath your config:
         * `config.vm.provision "shell", path: "provisioning.sh"`
     * After that you can either use `vagrant destroy` to stop your VM and then `vagrant up` to start a new one with your provisioning, or you can use command `vagrant reload --provision` in order to reload your VM with provision in mind
+
+
+
+### Adding a private IP to your VM and testing NGINX
+
+In order to test the nginx we need to add an IP to our VM:
+
+1. Open `Vagrantfile`
+2. In your config tyoe the following line `config.vm.network "private_network", ip: "192.168.10.100"`. It means we are configuring a private network and giving it an IP address of `192.168.10.100`
+3. Restart your VM with `vagrant reload`, or start a new one by using `vagrant destroy` and then `vagrant up`, in order for this changes to take effect
+4. Copy that IP address into your web browser and check if nginx is working
