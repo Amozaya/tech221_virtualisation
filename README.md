@@ -6,7 +6,7 @@
 
 Four main pillars of a good DevOps practice:
 
-* Cost - dvelopment is more cost effective
+* Cost - development is more cost effective
 * Flexibility - easy to change tools or processes if required
 * Ease of use - tools are easy to use for the developers or anyone else in the team
 * Robustness - maximize comapny services' uptime, ideally 100% uptime 
