@@ -1,5 +1,16 @@
 # Virtualisation
 
+## 4 Pillars of DevOps
+
+![4 Pillars of DevOps diagram](resources/pillars_of_devops.JPG)
+
+Four main pillars of a good DevOps practice:
+
+* Cost - dvelopment is more cost effective
+* Flexibility - easy to change tools or processes if required
+* Ease of use - tools are easy to use for the developers or anyone else in the team
+* Robustness - maximize comapny services' uptime, ideally 100% uptime 
+
 ## What is a Virtual Machine?
 
 
@@ -23,6 +34,10 @@ Development Environment is a workspace for developers to make changes without br
 
 Development Environment should be used when you want to make any changes to your software without affecting your users. To create a development environment developers usually make a copy of the application on their local machine where they can do any extrame changes and test them before releasing them to the live environment. 
 Depending on the size of the project there might be multiple environments. In some cases you might also have a "Staging" environment, it is done in the critical project to ensure that new code goes through an extra layer of testing before going into the live environment.
+
+### What makes a good Dev Environment?
+
+![Good Development Environment Diagram](resources/good_dev_environment.JPG)
 
 
 ## Using Vagrant and VirtualBox
@@ -78,3 +93,79 @@ In order to test the nginx we need to add an IP to our VM:
 2. In your config tyoe the following line `config.vm.network "private_network", ip: "192.168.10.100"`. It means we are configuring a private network and giving it an IP address of `192.168.10.100`
 3. Restart your VM with `vagrant reload`, or start a new one by using `vagrant destroy` and then `vagrant up`, in order for this changes to take effect
 4. Copy that IP address into your web browser and check if nginx is working
+
+
+### Adding folder that will be ignored by your repo
+
+If there are any file that contain some private information, such as IP adresses, Passwords, etc., you can create a file that will contain the list of all the files and folders you want to be ignored by `git add`, meaining they wont be uploaded to your repository.
+
+To add ignore file you have to:
+
+1. It's optional, but can be a good practice to create a folder called `ignores` (or name whatever you like) that will contain the files you want to be ignored by git
+2. Create `.gitignore` file
+3. Open the file and list all the folders and files you want to be ignored, for example `/ignores` to select our folder we created
+4. Move the files you want to be ignored into `/ignores` folder
+5. Now, if you try to use `git` commands your `ignores` folder will be skipped
+
+
+
+### Syncing folder with VM
+If there is any folder in your VisualStudio that you would like to sync with your VM machine, you can do so by writing a small line of code telling a Vagrant to copy that folder to your VM:
+
+* `config.vm.synced_folder "app", "/home/vagrant/app"` - where:
+    * `config.vm.synced_folder "app"` - we are telling Vagrant to sync the folder called `app` when configurating the VM
+    * `"home/vagrant/app"` - we are telling the destination where we want to sync this folder to
+
+
+
+
+### Run automated tests and deploy the app
+
+*In VS terminal:*
+
+1. `gem install bundler` - install bundler for tests with Ruby
+
+2. `bundle` - bundle all the test
+
+3.  `rake spec` - run all the tests
+
+*In Bash terminal:*
+1. `cd` into your project folder where your `Vagrantfile` located and connect by using `vagrant ssh` command
+
+2.  `sudo apt-get install python-software-properties` - install python software properties
+
+3. `curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -` - download a newer version of `nodejs`
+
+4.  `sudo apt-get install nodejs -y`  - install `nodejs` on the VM
+
+5.  `sudo npm install pm2 -g` - install `pm2`
+
+6. `cd app` - navigate into your app folder
+
+7.  `npm install` - use pm2 to install the app
+
+8. `node app.js` - run the app
+
+9. When app is deployed it will say `Your app is redy and listening on port 3000`
+
+10. Go to your web-browser and in the new tab enter the following ip: `192.168.10.100:3000`
+
+11. The app is deployed and you can see it in your browser
+
+![App deployed screen](resources/app_deployed.JPG)
+
+
+## Automate app deployment by using provisioning script
+
+In order to automate all the process I have made some changes to my `provisioning.sh` file by adding all of the above steps.
+
+The final script looks as following:
+
+![App deployment provisioning](resources/provisioning_script_appjs.JPG)
+
+After you use `vagrant up` command in terminal the VM will be started and will install all of the required packages as well as it will deploy our app in to the nginx server.
+If everything is correct you will see the final message as following:
+
+![App deployed message](resources/app_ready_on_port_3000.JPG)
+
+Now, if you go back to your browser and type in the following IP: `192.168.10.100:3000`, you will be able to see your app deployed.
