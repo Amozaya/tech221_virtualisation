@@ -124,7 +124,7 @@ Here are some ways to run Sparta app in the background
     ![Jobs in the background](resources/lunix_backgroun_process_running.JPG)
 
     To stop the process:
-    1. First to kill the procees we need to find it's PID. To do so we can use a command `ps -eaf` and find our running up there, however, the list might be too long it will take some time to find the process. Instead, we can use `ps -eaf |grep app.js` in order to filter our results and show only our app.js info:
+    1. First to kill the procees we need to find it's PID. To do so we can use a command `ps -eaf` and find our running app there, however, the list might be too long it will take some time to find the process. Instead, we can use `ps -eaf |grep app.js` in order to filter our results and show only our app.js info:
 
     ![App PID](resources/PID_running_app.JPG)
 
