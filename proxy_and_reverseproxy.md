@@ -60,7 +60,7 @@ Why use reverse proxy server:
 
 ## NGINX default configuration
 
-
+Nginx `sites-available` directory contains config files which specify how nginx should handle connection requests and which ports connect to. By default it listens to incoming connections and directs them to port `80` which is `HTTP` connection port.
 
 ## Setting up NGINX as reverse proxy
 The following guide explains how to set up nginx as a reverse proxy:
