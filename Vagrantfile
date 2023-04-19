@@ -1,14 +1,21 @@
 Vagrant.configure("2") do |config|
+  
+  config.vm.define "app" do |app|
 
-  config.vm.box = "ubuntu/xenial64"
-  config.vm.network "private_network", ip: "192.168.10.100"
+    app.vm.box = "ubuntu/xenial64"
+    app.vm.network "private_network", ip: "192.168.10.100"
 
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   sudo apt update -y
-  #   sude apt upgrade -y
-  #   sudo apt install nginx -y
-  # SHELL
+    app.vm.provision "shell", path: "provisioning.sh"
 
-  config.vm.provision "shell", path: "provisioning.sh"
+    # syncing the app folder
+    app.vm.synced_folder "app", "/home/vagrant/app"
+  end
+
+  config.vm.define "db" do |db|
+
+    db.vm.box = "ubuntu/xenial64"
+    db.vm.network "private_network", ip:"192.168.10.150"
+    
+  end 
 
 end
