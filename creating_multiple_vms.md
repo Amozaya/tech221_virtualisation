@@ -120,11 +120,11 @@ Here are some ways to run Sparta app in the background
     3. Use `node app.js &` to run the app, where `&` at the end tells to run it in the background. After that press `Enter` again to return to the terminal
     4. Now, if you enter your ip `192.168.10.100:3000` in the browser tab it should take you to Sparta app
     4. You can use `jobs` command to see the active jobs:
-    
+
     ![Jobs in the background](resources/lunix_backgroun_process_running.JPG)
 
     To stop the process:
-    1. First to kill the procees we need to find it's PID. To do so we can use a command `ps -eaf` and find our running up there, however, the list might be too long it will take some time to find the process. Instead, we can use `ps -eaf |grep app.js` in order to filder our results and show only our app.js info:
+    1. First to kill the procees we need to find it's PID. To do so we can use a command `ps -eaf` and find our running up there, however, the list might be too long it will take some time to find the process. Instead, we can use `ps -eaf |grep app.js` in order to filter our results and show only our app.js info:
 
     ![App PID](resources/PID_running_app.JPG)
 
