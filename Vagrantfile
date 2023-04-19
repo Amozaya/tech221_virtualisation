@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
 
     db.vm.box = "ubuntu/xenial64"
     db.vm.network "private_network", ip:"192.168.10.150"
-    
+    db.vm.provision "shell", path: "db_provisioning/provisioning.sh"
   end 
 
 end
