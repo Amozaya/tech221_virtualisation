@@ -109,6 +109,42 @@ end
 9. Type `sudo systemctl status mongod` to check status to ensure mongo is running
 
 
+## Running a backgound process in Linux
+
+Here are some ways to run Sparta app in the background
+
+1. Using Linux commands:
+
+    1. Sign in to your VM through Bash terminal using `vagrant ssh app` command
+    2. Use `cd app` to navigate inside the app folder
+    3. Use `node app.js &` to run the app, where `&` at the end tells to run it in the background. After that press `Enter` again to return to the terminal
+    4. Now, if you enter your ip `192.168.10.100:3000` in the browser tab it should take you to Sparta app
+    4. You can use `jobs` command to see the active jobs:
+    ![Jobs in the background](resources/lunix_backgroun_process_running.JPG)
+
+    To stop the process:
+    1. First to kill the procees we need to find it's PID. To do so we can use a command `ps -eaf` and find our running up there, however, the list might be too long it will take some time to find the process. Instead, we can use `ps -eaf |grep app.js` in order to filder our results and show only our app.js info:
+    ![App PID](resources/PID_running_app.JPG)
+    2. Now we can use `kill` command with the PID we found in order to stop the process. Command will look like this: `kill 5091`
+    3. We can run `jobs` command to verify the process was stopped
+    ![Killed app](resources/terminated_linux_bg_app.JPG)
+
+
+2. Using pm2 commands:
+
+    1. Sign in to your VM through Bash terminal using `vagrant ssh app` command
+    2. Use `cd app` to navigate inside the app folder
+    3. Use command `pm2 start app.js --name sparta-app` where at the end we assign the name for this process as `sparta-app`
+    4. Now you will see a table that confirms the app is running in the background:
+    ![PM2 start app](resources/pm2_start_app.JPG)
+
+    To stop pm2 process:
+    1. To stop the app using pm2 we simply need to write command `pm2 stop 0`, where `0` is our app id from the table we can see above
+    2. Now it should show us a new table where it confirms the process been stopped:
+    ![PM2 stop app](resources/pm2_stop_process.JPG)
+
+
+
 
 
 
