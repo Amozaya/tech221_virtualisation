@@ -150,6 +150,74 @@ Here are some ways to run Sparta app in the background
     ![PM2 stop app](resources/pm2_stop_process.JPG)
 
 
+## Connecting both VMs together and feeding the data to the app
+
+Before we start we have to change our `Vagrantfile` by updating configuration. Instead of using `xenial64` Linux OS (16.04) we will use a newer `bionic64` OS (18.04). Your new Vagrant file should look like this:
+
+```
+Vagrant.configure("2") do |config|
+  
+  config.vm.define "app" do |app|
+
+    app.vm.box = "ubuntu/bionic64"
+    app.vm.network "private_network", ip: "192.168.10.100"
+
+    app.vm.provision "shell", path: "provisioning.sh"
+
+    # syncing the app folder
+    app.vm.synced_folder "app", "/home/vagrant/app"
+  end
+
+  config.vm.define "db" do |db|
+
+    db.vm.box = "ubuntu/bionic64"
+    db.vm.network "private_network", ip:"192.168.10.150"
+    db.vm.provision "shell", path: "db_provisioning/provisioning.sh"
+  end 
+
+end
+```
+
+Next step you have to start your VMs by using `vagrant up` command.
+
+*Then, in the "db" VM:*
+
+1. In the Bash terminal `cd` into your project folder and use `vagrant ssh db` to connect
+
+2. `sudo nano /etc/mongod.conf` - open mongod configuration file
+
+3. Scroll down, change `bindip` to `0.0.0.0`
+
+4. Save file by pressing `ctrl+x` to exit, then `y` to save changes, and then `enter` to confirm
+
+5. Restart mongod - `sudo systemctl restart mongod`
+
+6. `sudo systemctl enable mongod` - enable autostart of mongo
+
+7. `sudo systemctl status mongod` - ensure that mongo is running
+
+*"app" VM:* 
+
+1. In a separate Bash terminal `cd` into your project folder and use `vagrant ssh app` to connect
+
+2. `sudo nano .bashrc` - open .bashrc file to create your environment variable there
+
+3. Scroll to the bottom and write `export DB_HOST=mongodb://192.168.10.150:27017/posts`, where:
+    * `export DB_HOST` - creating an environment variable called DB_HOST
+    * `mongodb://192.168.10.150:27017/posts` - telling machine to connect to mongodb database at the specific IP address that we have assigned in our Vagrantfile config and to the page called `posts`
+
+4. `source .bashrc` -restarts .bashrc file to apply changes
+
+5. `printenv DB_HOST` - check the environment variable
+
+6. `cd app` - navigate inside the app folder
+
+7. `node seeds/seed.js` - seed data to database
+
+8. Run the app by using `pm2 start app.js --name sparta-app`
+
+9. Type `192.168.10.100:3000/posts` in the browser to check if `posts` page works and it takes the data from the mongodb
+
 
 
 
