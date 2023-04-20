@@ -218,7 +218,96 @@ Next step you have to start your VMs by using `vagrant up` command.
 
 9. Type `192.168.10.100:3000/posts` in the browser to check if `posts` page works and it takes the data from the mongodb
 
+![Posts Page](resources/sparta_posts_page.JPG)
 
+
+## Provisioning MongoDB by editing `mongod.conf` file through provisioning
+
+To automate the entire process of setting MongoDB VM we need to add the following lines to our provisioning script:
+
+1.  `sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf`, where:
+    * `sed` - uses a command that tell to search and replace the text
+    * `-i` - means in-line method
+    * `s/127.0.0.1/0.0.0.0/g` - `s` means search for `127.0.0.1` string inside the file and replace it with `0.0.0.0` string, and `g` means to repat as many times as you can find it
+    * `/etc/mongod.conf` - is the destination to the file we want to search and change text in
+
+2. `sudo systemctl restart mongod` - after config file is changed we need to restart mongo
+3. `sudo systemctl enable mongod` - enable mongo
+
+Final provisioning script looks like this:
+
+```
+sudo apt update -y 
+
+sudo apt upgrade -y
+
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv D68FA50FEA312927
+
+echo "deb https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+
+sudo apt update -y 
+
+sudo apt upgrade -y
+
+sudo apt-get install -y mongodb-org=3.2.20 mongodb-org-server=3.2.20 mongodb-org-shell=3.2.20 mongodb-org-mongos=3.2.20 mongodb-org-tools=3.2.20
+
+sudo systemctl start mongod
+
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
+
+sudo systemctl restart mongod
+
+sudo systemctl enable mongod
+```
+
+
+## Provisioning "app" machine by adding environment variable to  `.bashrc` file through provisioning
+
+#### Blocker: current script is not fully working as `node seeds/seed.js` is not seeding the data to the app. It will work if you seed manually and then restart the app!
+
+To automate the entire process of setting app VM we need to add the following lines to our provisioning script:
+1. Add `echo 'export DB_HOST=mongodb://192.168.10.150:27017/posts' >> /home/vagrant/.bashrc`, where:
+    * `echo` - adds line of text
+    * `export DB_HOST=mongodb://192.168.10.150:27017/posts` - creates an environment variable
+    * `>> /home/vagrant/.bashrc` - assigns the destination to .bashrc file
+2. Add `source .bashrc` - to restart your `.bashrc` configuration file
+3. `cd app` navigate inside the app folder
+4. `npm install` - install the app
+5. `node seeds/seed.js` - seed the data to the database
+6. `pm2 start app.js --name sparta-app` - start app in the backgound using pm2
+7. Use `192.168.10.100:3000/posts` in your browser in order to check that `posts` page in your app working
+
+As a result, the entire process has been automated and now you can sign in to the app `posts` page without connecting to the virtual machines through Bash terminal.
+
+Final provisioning script for `app` VM should look like this:
+
+```
+sudo apt update -y
+
+sudo apt upgrade -y
+
+sudo apt install nginx -y
+
+sudo apt-get install python-software-properties
+
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash 
+
+sudo apt-get install nodejs -y
+
+sudo npm install pm2 -g
+
+echo 'export DB_HOST=mongodb://192.168.10.150:27017/posts' >> /home/vagrant/.bashrc
+
+source .bashrc
+
+cd app
+
+npm install
+
+node seeds/seed.js
+
+node app.js &
+```
 
 
 
